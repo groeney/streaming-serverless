@@ -17,6 +17,11 @@ export default {
       editedTodo: null
     };
   },
+  watch: {
+    // eslint-disable-next-line
+    'todo.completed': function(oldCompleted, newCompleted) {
+      // eslint-disable-next-line
+      console.log(newCompleted);
     }
   },
   methods: {
@@ -39,6 +44,12 @@ export default {
     cancelEdit: function() {
       this.editedTodo = null;
       this.todo.title = this.beforeEditCache;
+    },
+
+    toggleCompleted: function() {
+      // TODO api PATCH { completed }
+    }
+  },
   directives: {
     'todo-focus': function(el, binding) {
       if (binding.value) {
