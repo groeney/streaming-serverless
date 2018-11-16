@@ -1,5 +1,5 @@
 <template>
-  <li class="todo">
+  <li class="todo" :key="todo.id" :class="{completed: todo.completed, editing: todo == editedTodo}">
     <div class="view">
       <input class="toggle" type="checkbox" v-model="todo.completed">
       <button class="destroy" @click="removeTodo(todo)"></button>
