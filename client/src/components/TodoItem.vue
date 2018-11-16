@@ -20,8 +20,7 @@ export default {
   watch: {
     // eslint-disable-next-line
     'todo.completed': function(oldCompleted, newCompleted) {
-      // eslint-disable-next-line
-      console.log(newCompleted);
+      // TODO api PATCH { completed }
     }
   },
   methods: {
@@ -39,6 +38,7 @@ export default {
       if (!this.todo.title) {
         this.$emit('remove-todo', this.todo);
       }
+      // TODO api PATCH { title }
     },
 
     cancelEdit: function() {

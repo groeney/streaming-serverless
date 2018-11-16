@@ -27,6 +27,9 @@ export default {
       }
       this.todos.push({ id: this.todos.length + 1, title: value, completed: false });
       this.newTodo = '';
+      // TODO api POST
+    },
+
     removeTodo: function(todo) {
       const index = this.todos.indexOf(todo);
       this.todos.splice(index, 1);
