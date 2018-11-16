@@ -2,8 +2,8 @@
   <li class="todo" :key="todo.id" :class="{completed: todo.completed, editing: todo == editedTodo}">
     <div class="view">
       <input class="toggle" type="checkbox" v-model="todo.completed">
-      <button class="destroy" @click="removeTodo(todo)"></button>
       <label @dblclick="editTodo">{{todo.title}}</label>
+      <button class="destroy" @click="$emit('remove-todo', todo)"></button>
     </div>
     <input class="edit" type="text" v-model="todo.title" v-todo-focus="todo == editedTodo" @blur="doneEdit" @keyup.enter="doneEdit" @keyup.esc="cancelEdit">
   </li>

@@ -1,6 +1,6 @@
 <template>
-  <ul class="todo-list">
-    <TodoItem v-for="todo in todos" :todo="todo" :key="todo.id" :class="{completed: todo.completed}"></TodoItem>
+  <ul class="todo-list" >
+    <TodoItem @remove-todo="removeTodo" v-for="todo in todos" :todo="todo" :key="todo.id" :class="{completed: todo.completed}"></TodoItem>
   </ul>
 </template>
 
@@ -27,6 +27,10 @@ export default {
       }
       this.todos.push({ id: this.todos.length + 1, title: value, completed: false });
       this.newTodo = '';
+    removeTodo: function(todo) {
+      const index = this.todos.indexOf(todo);
+      this.todos.splice(index, 1);
+      // TODO api DELETE
     }
   }
 };
