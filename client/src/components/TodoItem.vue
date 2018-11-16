@@ -2,48 +2,48 @@
   <li class="todo">
     <div class="view">
       <input class="toggle" type="checkbox" v-model="todo.completed">
-      <label @dblclick="editTodo(todo)">{{todo.title}}</label>
       <button class="destroy" @click="removeTodo(todo)"></button>
+      <label @dblclick="editTodo">{{todo.title}}</label>
     </div>
-    <input class="edit" type="text" v-model="todo.title" v-todo-focus="todo == editedTodo" @blur="doneEdit(todo)" @keyup.enter="doneEdit(todo)" @keyup.esc="cancelEdit(todo)">
+    <input class="edit" type="text" v-model="todo.title" v-todo-focus="todo == editedTodo" @blur="doneEdit" @keyup.enter="doneEdit" @keyup.esc="cancelEdit">
   </li>
 </template>
 
 <script>
 export default {
   props: ['todo'],
-  data() {
+  data: function() {
     return {
       editedTodo: null
     };
   },
+    }
+  },
+  methods: {
+    editTodo: function() {
+      this.beforeEditCache = this.todo.title;
+      this.editedTodo = this.todo;
+    },
+
+    doneEdit: function() {
+      if (!this.editedTodo) {
+        return;
+      }
+      this.editedTodo = null;
+      this.todo.title = this.todo.title.trim();
+      if (!this.todo.title) {
+        this.$emit('remove-todo', this.todo);
+      }
+    },
+
+    cancelEdit: function() {
+      this.editedTodo = null;
+      this.todo.title = this.beforeEditCache;
   directives: {
     'todo-focus': function(el, binding) {
       if (binding.value) {
         el.focus();
       }
-    }
-  },
-  methods: {
-    editTodo: function(todo) {
-      this.beforeEditCache = todo.title;
-      this.editedTodo = todo;
-    },
-
-    doneEdit: function(todo) {
-      if (!this.editedTodo) {
-        return;
-      }
-      this.editedTodo = null;
-      todo.title = todo.title.trim();
-      if (!todo.title) {
-        this.removeTodo(todo);
-      }
-    },
-
-    cancelEdit: function(todo) {
-      this.editedTodo = null;
-      todo.title = this.beforeEditCache;
     }
   }
 };
