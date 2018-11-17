@@ -1,0 +1,32 @@
+version: '3'
+services:
+  server:
+    build: ./server
+    ports:
+      - 5000:5000
+    volumes:
+      - ./server/.:/usr/src/app
+      - /usr/src/app/node_modules
+
+  client:
+    build: ./client/.
+    ports:
+      - 3000:3000
+    volumes:
+      - ./client/.:/usr/src/app
+      - /usr/src/app/node_modules
+    links:
+      - server
+
+  localstack:
+    image: localstack/localstack
+    ports:
+      - '4567-4583:4567-4583'
+      - '8080:8080'
+    environment:
+      - SERVICES=dynamodb,lambda,sns,kinesis
+      - DEBUG=${DEBUG- }
+      - DEFAULT_REGION=us-west-2
+      - LAMBDA_EXECUTOR=docker
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
