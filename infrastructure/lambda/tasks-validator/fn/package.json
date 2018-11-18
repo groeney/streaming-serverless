@@ -1,0 +1,17 @@
+{
+  "name": "tasks-validator-lambda",
+  "version": "1.0.0",
+  "description": "Lambda function to process events from the Tasks stream",
+  "main": "index.js",
+  "scripts": {
+    "copyLib": "cp -rf ../../lib/* ./"
+  },
+  "author": "James Groeneveld",
+  "license": "ISC",
+  "dependencies": {
+    "crypto-js": "^3.1.9-1",
+    "js-yaml": "^3.12.0",
+    "dynamoose": "^0.8.7",
+    "shortid": "^2.2.13"
+  }
+}
