@@ -11,8 +11,12 @@ dynamoose.AWS.config.update({
   region: 'us-west-1'
 });
 dynamoose.local('http://localstack:4569');
+
 const app = express();
 app.use(bodyParser.json());
+
+app.use('/api/tasks', require('./routes/tasks'));
+
 const server = app.listen(process.env.PORT || 5000, function() {
   debug('Listening on port ' + server.address().port);
 });
