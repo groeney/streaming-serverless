@@ -16,18 +16,6 @@ Messages must be matched by the following regex:
 /^(revert: )?(feat|fix|style|refactor|chore)(\(.+\))?: .{1,50}/;
 ```
 
-### Terraform / infra deployment recipe
+## Running the stack
 
-cd infrastructure/
-
-export TF_VAR_TWILIO_FROM=[from]
-export TF_VAR_TWILIO_SID=[SID]
-export TF_VAR_TWILIO_TOKEN=[TOKEN]
-export TF_VAR_SENDGRID_KEY=[KEY]
-
-terraform init -input=false
-terraform refresh
-terraform plan -detailed-exitcode -out=./plan
-terraform validate
-
-terraform apply
+- Running `grunt start` will build the necessary infrastructure with Localstack and start the client and server

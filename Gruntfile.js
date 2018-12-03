@@ -6,7 +6,11 @@ module.exports = function(grunt) {
     shell: {
       terraform: {
         command: () => {
-          return 'cd ./infrastructure && terraform -v && terraform init -input=false && terraform apply -auto-approve -input=false';
+          return (
+            'cd ./infrastructure && terraform -v ' +
+            '&& terraform init -input=false ' +
+            '&& terraform apply -auto-approve -input=false'
+          );
         },
       },
       localstackUp: {
@@ -16,7 +20,12 @@ module.exports = function(grunt) {
       },
       localstackDown: {
         command: () => {
-          return 'docker-compose kill -s SIGINT'; // Will kill all docker-compose -d daemons
+          return 'docker-compose kill -s SIGINT && docker-compose down'; // Will kill all docker-compose -d daemons
+        },
+      },
+      up: {
+        command: () => {
+          return 'TMPDIR=/private$TMPDIR docker-compose up';
         },
       },
     },
@@ -60,4 +69,6 @@ module.exports = function(grunt) {
     'wait:3600', // Not functionally essential but keeps error logs clean
     'shell:terraform',
   ]);
+
+  grunt.registerTask('start', ['build', 'shell:up']);
 };
