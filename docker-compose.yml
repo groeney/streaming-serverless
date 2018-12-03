@@ -26,7 +26,6 @@ services:
     environment:
       - SERVICES=dynamodb,lambda,sns,kinesis
       - DEBUG=${DEBUG- }
-      - DEFAULT_REGION=us-west-2
       - LAMBDA_EXECUTOR=docker
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
