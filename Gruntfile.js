@@ -70,5 +70,7 @@ module.exports = function(grunt) {
     'shell:terraform',
   ]);
 
+  grunt.registerTask('redeploy', ['shell:terraform']);
+
   grunt.registerTask('start', ['build', 'shell:up']);
 };
