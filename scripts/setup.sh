@@ -8,7 +8,7 @@ handle_docker() {
   pgrep -f docker >/dev/null 2>&1
   if [ $? -eq 1 ]; then
     tput setaf 1;
-    echo "Error: Docker is not running, start or install Docker and continue." 
+    echo "Error: Docker is not running, start or install Docker and continue."
     exit 1
   fi
 }
@@ -43,7 +43,7 @@ handler_brew() {
 }
 
 handler_pip() {
-  packages=(localstack awscli-local)
+  packages=(awscli-local)
 
   for package in "${packages[@]}"
   do
