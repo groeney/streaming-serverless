@@ -1,0 +1,17 @@
+{
+  "name": "email-executer-lambda",
+  "version": "1.0.0",
+  "description": "Lambda function to send email notifications",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./scripts/jest.js",
+    "copyLib": "cp -rf ../../lib/* ./"
+  },
+  "author": "James Groeneveld",
+  "license": "ISC",
+  "dependencies": {
+    "@sendgrid/mail": "^6.3.1",
+    "crypto-js": "^3.1.9-1",
+    "js-yaml": "^3.12.0"
+  }
+}
