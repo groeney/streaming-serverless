@@ -1,7 +1,7 @@
 /* Helpers for executer layer */
 
 exports.parseEmailDomain = parseEmailDomain;
-exports.parseSnsObject = reconcileSnsObject;
+exports.parseSnsObject = parseSnsObject;
 
 function parseEmailDomain(email) {
   return email.match(/[\w.]+$/, '')[0];

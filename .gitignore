@@ -7,7 +7,7 @@ node_modules/
 .terraform/
 
 # Lambda
-/infrastructure/lambda/**/fn/helpers.js
+/infrastructure/lambda/**/fn/helpers*.js
 /infrastructure/lambda/**/*.zip
 /infrastructure/lambda/**/output/
 /infrastructure/lambda/*/fn/node_modules/

@@ -1,15 +1,14 @@
+/*
+
+Helpers that are shared across both validator and executer layers.
+
+*/
+
 exports.parseDynamoObj = parseDynamoObj;
-exports.isObjEmpty = isObjEmpty;
 
 /* Function definitions */
 function parseDynamoObj(item) {
   return _stripMetaData(item);
-}
-
-function isObjEmpty(obj) {
-  return (
-    typeof obj === 'undefined' || obj === null || Object.keys(obj).length === 0
-  );
 }
 
 /* Private methods to the module */

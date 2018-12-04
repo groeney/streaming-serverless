@@ -17,18 +17,45 @@ const config = new AWS.Config({
   region: env.AWS_REGION,
 });
 
-const sns = isLocal
-  ? new AWS.SNS({ endpoint: `http://${env.LOCALSTACK_HOSTNAME}:4575` })
-  : new AWS.SNS();
-
-const ddb = isLocal
-  ? new AWS.DynamoDB({ endpoint: `http://${env.LOCALSTACK_HOSTNAME}:4569` })
-  : new AWS.DynamoDB();
+const sns = new AWS.SNS({ endpoint: `http://${env.LOCALSTACK_HOSTNAME}:4575` });
 
 const h = require('./helpers.js');
+const hv = require('./helpersValidator.js');
 
 exports.lambda_handler = (event, context, callback) => {
   console.log(`event: ${JSON.stringify(event)}`);
+  console.log(`env: ${JSON.stringify(env)}`);
+  const promises = event.Records.map(record => {
+    return eval(hv.parseValidatorFunction(record.eventName))(record.dynamodb)
+      .then(params => {
+        return hv.handleParams(sns, params, 'notifications');
+      })
+      .then(res => {
+        console.log(`${fnName} succeeded: ${JSON.stringify(res)}`);
+        return true;
+      })
+      .catch(err => {
+        console.log(
+          `${fnName} failed on record: ${JSON.stringify(
+            record
+          )} \n with error: ${err.stack || err}`
+        );
+        return false;
+      });
+  });
+
+  Promise.all(promises.map(p => p.catch(e => e)))
+    .then(res => {
+      callback(
+        null,
+        `Processed ${
+          res.length
+        } records with the following output: ${JSON.stringify(res)}`
+      );
+    })
+    .catch(err =>
+      callback(null, `${fnName} failed at the root level: ${err.stack || err}`)
+    );
 };
 
 /*
@@ -37,118 +64,32 @@ exports.lambda_handler = (event, context, callback) => {
 ##########################
 */
 
-function validateInsert(data) {
-  return new Promise(async (resolve, reject) => {
-    const newTask = h.parseDynamoObj(data.NewImage);
+function validateInsert(record) {
+  return new Promise((resolve, reject) => {
+    const newTask = h.parseDynamoObj(record.NewImage);
 
     // TODO completed is being sent through stream as S not BOOL
     newTask.completed = newTask.completed === 'true';
 
-    resolve({});
+    resolve({ Message: 'insert' });
   });
 }
 
-function validateModify(data) {
-  return new Promise(async (resolve, reject) => {
-    const newTask = h.parseDynamoObj(data.NewImage);
-    const oldTask = h.parseDynamoObj(data.OldImage);
+function validateModify(record) {
+  return new Promise((resolve, reject) => {
+    const newTask = h.parseDynamoObj(record.NewImage);
+    const oldTask = h.parseDynamoObj(record.OldImage);
 
     // TODO completed is being sent through stream as S not BOOL
     newTask.completed = newTask.completed === 'true';
     oldTask.completed = oldTask.completed === 'true';
 
-    resolve({});
+    resolve({ Message: 'modify' });
   });
 }
 
-function validateRemove(data) {
-  return new Promise(async (resolve, reject) => {
-    resolve({});
-  });
-}
-
-/*
-##########################
-### HELPERS ###
-##########################
-*/
-
-function handleParams(sns, params, topicName) {
+function validateRemove(record) {
   return new Promise((resolve, reject) => {
-    if (h.isObjEmpty(params)) resolve('Invalid event.');
-    else {
-      publishToTopic(sns, params, topicName)
-        .then(res => {
-          resolve(res);
-        })
-        .catch(err => {
-          reject(err);
-        });
-    }
+    resolve({ Message: 'remove' });
   });
-}
-
-function parseValidatorFunction(eventName) {
-  return `validate${eventName.charAt(0) + eventName.substr(1).toLowerCase()}`;
-}
-
-function parseKinesisData(record) {
-  return JSON.parse(
-    new Buffer(record.kinesis.data, 'base64').toString('ascii')
-  );
-}
-
-function publishToTopic(sns, params, topicName) {
-  return new Promise((resolve, reject) => {
-    getTopicArn(sns, env.NODE_ENV, topicName)
-      .then(topicArn => {
-        sns
-          .publish({ ...params, TopicArn: topicArn })
-          .promise()
-          .then(data => {
-            resolve(
-              `Successfully published to events topic: ${JSON.stringify(data)}`
-            );
-          })
-          .catch(err => {
-            reject(`Could not publish to events topic.
-                  params: ${JSON.stringify(params)}
-                  err: ${err}`);
-          });
-      })
-      .catch(err => {
-        reject(err);
-      });
-  });
-}
-
-function getTopicArn(sns, env, topicName) {
-  return new Promise((resolve, reject) => {
-    sns
-      .listTopics()
-      .promise()
-      .then(data => {
-        const topic = data.Topics.filter(topic => {
-          return (
-            getTopicNameFromARN(topic.TopicArn) ===
-            `${isLocal ? 'local' : env}-${topicName}`
-          );
-        });
-        topic.length
-          ? resolve(topic[0].TopicArn)
-          : reject(`No SNS topic ${topicName} found.`);
-      })
-      .catch(err => {
-        reject(err);
-      });
-  });
-}
-
-function getTopicNameFromARN(arn) {
-  /*
-  Returns undefined if arn is invalid
-  Example
-  arn: 'arn:aws:sns:us-east-1:123456789012:events'
-   */
-  return arn.split(':').slice(-1)[0];
 }
