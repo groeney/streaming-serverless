@@ -71,7 +71,20 @@ function validateInsert(record) {
     // TODO completed is being sent through stream as S not BOOL
     newTask.completed = newTask.completed === 'true';
 
-    resolve({ Message: 'insert' });
+    /* --- START event business logic --- */
+
+    const subject = 'New Task';
+    const message = `A new task has been created for you to complete: ${
+      newTask.title
+    }`;
+    const toEmail = newTask.assignee_email;
+
+    /* --- END event business logic --- */
+
+    const notificationParams = { subject, message, toEmail, default: message };
+    const imageParams = { imageType: 'Task', newImage: newTask };
+
+    resolve(hv.createSnsParams(notificationParams, imageParams));
   });
 }
 

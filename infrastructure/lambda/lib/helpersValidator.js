@@ -2,9 +2,22 @@
 
 const env = process.env;
 
+exports.createSnsParams = createSnsParams;
 exports.handleParams = handleParams;
 exports.parseValidatorFunction = parseValidatorFunction;
 exports.publishToTopic = publishToTopic;
+
+function createSnsParams(notificationParams, imageParams) {
+  const messageAttributes = { ...notificationParams, ...imageParams };
+  return _validateNotificationParams(notificationParams)
+    ? {
+        Subject: notificationParams.subject,
+        Message: JSON.stringify(messageAttributes),
+        MessageAttributes: _formatMessageAttributes(messageAttributes),
+        MessageStructure: 'json',
+      }
+    : {};
+}
 
 function handleParams(sns, params, topicName) {
   return new Promise((resolve, reject) => {
@@ -77,6 +90,30 @@ function _getTopicNameFromARN(arn) {
   arn: 'arn:aws:sns:us-east-1:123456789012:events'
    */
   return arn.split(':').slice(-1)[0];
+}
+
+function _formatMessageAttributes(messageAttributes) {
+  let res = {};
+  Object.keys(messageAttributes).forEach(key => {
+    res[key] = {
+      DataType: 'String',
+      StringValue: JSON.stringify(messageAttributes[key]),
+    };
+  });
+  return res;
+}
+
+function _validateNotificationParams(notificationParams) {
+  /*
+  Determines whether the notification params for the event are valid
+  */
+  return (
+    typeof notificationParams === 'object' &&
+    !!notificationParams.subject &&
+    !!notificationParams.message &&
+    !!notificationParams.toEmail &&
+    !!notificationParams.default
+  );
 }
 
 function _isObjEmpty(obj) {
