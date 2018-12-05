@@ -1,6 +1,7 @@
 variable "role_arn" {}
 variable "sns_notifications_topic_arn" {}
 variable "sendgrid_key" {}
+variable "local_email" {}
 
 resource "null_resource" "email_executer_function_null" {
   triggers {
@@ -32,7 +33,8 @@ resource "aws_lambda_function" "email_executer" {
 
   environment {
     variables {
-      SENDGRID_KEY = "${var.sendgrid_key}"
+      SENDGRID_KEY = "${var.sendgrid_key}",
+      LOCAL_EMAIL = "${var.local_email}"
     }
   }
 

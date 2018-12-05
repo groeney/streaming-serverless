@@ -33,6 +33,7 @@ module "email_executer" {
   role_arn             = "FAKE_ROLE_ARN"
   sns_notifications_topic_arn = "${aws_sns_topic.notifications.arn}"
   sendgrid_key         = "${var.SENDGRID_KEY}"
+  local_email = "${var.LOCAL_EMAIL}"
 }
 
 output "email_executer_arn" {

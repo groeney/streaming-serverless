@@ -3,13 +3,38 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    watch: {
+      lambda: {
+        files: [
+          'infrastructure/lambda/**/fn/index.js',
+          'infrastructure/lambda/**/fn/package.json',
+          'infrastructure/lambda/lib/helpers*.js',
+        ],
+        tasks: ['redeploy'],
+      },
+    },
+    env: {
+      dev: {
+        src: '.env',
+      },
+    },
     shell: {
-      terraform: {
+      infraUp: {
         command: () => {
           return (
             'cd ./infrastructure && terraform -v ' +
             '&& terraform init -input=false ' +
             '&& terraform apply -auto-approve -input=false'
+          );
+        },
+      },
+      lambdaUp: {
+        command: () => {
+          return (
+            'cd ./infrastructure && terraform -v ' +
+            '&& terraform init -input=false ' +
+            '&& terraform apply -auto-approve -input=false ' +
+            '-target=module.tasks_validator -target=module.email_executer' // Keep up to date
           );
         },
       },
@@ -20,7 +45,7 @@ module.exports = function(grunt) {
       },
       localstackDown: {
         command: () => {
-          return 'docker-compose kill -s SIGINT && docker-compose down'; // Will kill all docker-compose -d daemons
+          return 'docker-compose down';
         },
       },
       up: {
@@ -35,9 +60,9 @@ module.exports = function(grunt) {
     'del-tf-state',
     'Delete terraform state files',
     function() {
-      DATA_DIR_PATH = 'data';
-      TF_STATE_FILE_PATH = 'infrastructure/terraform.tfstate';
-      TF_STATE_BACKUP_FILE_PATH = `${TF_STATE_FILE_PATH}.backup`;
+      DATA_FP = 'data';
+      TF_STATE_FP = 'infrastructure/terraform.tfstate';
+      TF_STATE_BACKUP_FP = `${TF_STATE_FP}.backup`;
       const delFile = function(filePath) {
         if (grunt.file.exists(filePath)) {
           grunt.log.write(`Deleting file ${filePath}...`);
@@ -45,12 +70,11 @@ module.exports = function(grunt) {
           grunt.log.ok();
         }
       };
-      delFile(TF_STATE_FILE_PATH);
-      delFile(TF_STATE_BACKUP_FILE_PATH);
-      delFile(DATA_DIR_PATH);
+      delFile(TF_STATE_FP);
+      delFile(TF_STATE_BACKUP_FP);
+      delFile(DATA_FP);
     }
   );
-
   grunt.registerTask('wait', 'Blocking wait before next task is run', function(
     ms
   ) {
@@ -61,16 +85,17 @@ module.exports = function(grunt) {
       done();
     }, ms);
   });
-
   grunt.registerTask('build', [
     'del-tf-state',
     'shell:localstackDown',
     'shell:localstackUp',
     'wait:3600', // Not functionally essential but keeps error logs clean
-    'shell:terraform',
+    'env:dev',
+    'shell:infraUp',
   ]);
+  grunt.registerTask('redeploy', ['env:dev', 'shell:infraUp']);
+  grunt.registerTask('start', ['build', 'env:dev', 'shell:up']);
 
-  grunt.registerTask('redeploy', ['shell:terraform']);
-
-  grunt.registerTask('start', ['build', 'shell:up']);
+  grunt.loadNpmTasks('grunt-env');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 };

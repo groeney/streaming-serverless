@@ -1,4 +1,5 @@
 variable "SENDGRID_KEY" {}
+variable "LOCAL_EMAIL" {}
 
 variable "AWS_KEY" {
   default = "FAKE_AWS_KEY"

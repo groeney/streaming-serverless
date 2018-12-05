@@ -4,6 +4,8 @@ services:
     build: ./server
     ports:
       - 5000:5000
+    environment:
+      - LOCAL_EMAIL=${LOCAL_EMAIL- }
     volumes:
       - ./server/.:/usr/src/app
       - /usr/src/app/node_modules
