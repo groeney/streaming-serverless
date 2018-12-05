@@ -8,7 +8,7 @@ const debug = require('debug')('app');
 dynamoose.AWS.config.update({
   accessKeyId: 'AKID',
   secretAccessKey: 'SECRET',
-  region: 'us-west-1'
+  region: 'us-west-1',
 });
 dynamoose.local('http://localstack:4569');
 
