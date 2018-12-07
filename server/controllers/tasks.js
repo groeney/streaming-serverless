@@ -42,7 +42,7 @@ module.exports = class Task {
     return new Promise((resolve, reject) => {
       this.model.create(
         {
-          ...req.body
+          ...req.body,
         },
         (err, task) => {
           if (err) {
@@ -57,25 +57,33 @@ module.exports = class Task {
 
   update(req) {
     return new Promise((resolve, reject) => {
-      this.model.update({ task_id: req.params.id }, { ...req.body }, (err, task) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(task);
+      this.model.update(
+        { task_id: req.params.id },
+        { ...req.body },
+        (err, task) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(task);
+          }
         }
-      });
+      );
     });
   }
 
   destroy(req) {
     return new Promise((resolve, reject) => {
-      this.model.delete({ task_id: req.params.id }, { update: true }, (err, task) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(task);
+      this.model.delete(
+        { task_id: req.params.id },
+        { update: true },
+        (err, task) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(task);
+          }
         }
-      });
+      );
     });
   }
 };

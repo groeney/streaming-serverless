@@ -19,6 +19,11 @@ module.exports = function(grunt) {
       },
     },
     shell: {
+      dockerWatch: {
+        command: () => {
+          return 'watch -n 1 docker ps -a';
+        },
+      },
       infraUp: {
         command: () => {
           return (
@@ -95,6 +100,7 @@ module.exports = function(grunt) {
   ]);
   grunt.registerTask('redeploy', ['env:dev', 'shell:infraUp']);
   grunt.registerTask('start', ['build', 'env:dev', 'shell:up']);
+  grunt.registerTask('docker', ['shell:dockerWatch']);
 
   grunt.loadNpmTasks('grunt-env');
   grunt.loadNpmTasks('grunt-contrib-watch');

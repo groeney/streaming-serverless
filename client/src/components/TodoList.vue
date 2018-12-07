@@ -1,6 +1,13 @@
 <template>
-  <ul class="todo-list" >
-    <TodoItem @remove-todo="removeTodo" v-for="todo in todos" :todo="todo" :key="todo.id" :class="{completed: todo.completed}"></TodoItem>
+  <ul class="todo-list">
+    <TodoItem
+      v-if="todo"
+      @remove-todo="removeTodo"
+      v-for="todo in orderedTodos"
+      :todo="todo"
+      :key="todo.task_id"
+      :class="{ completed: todo.completed }"
+    ></TodoItem>
   </ul>
 </template>
 
@@ -9,7 +16,7 @@ import TodoItem from './TodoItem.vue';
 
 export default {
   components: {
-    TodoItem
+    TodoItem,
   },
   props: ['todos'],
   computed: {},

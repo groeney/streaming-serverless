@@ -11,7 +11,7 @@ router.use(function timeLog(req, res, next) {
 
 router.get('/', (req, res, next) => {
   Controller.index(req)
-    .then(tasks => res.json({ tasks: tasks }))
+    .then(tasks => res.json(tasks))
     .catch(err => next(err));
 });
 
@@ -23,7 +23,7 @@ router.post('/', (req, res, next) => {
 
 router.get('/:id', (req, res, next) => {
   Controller.show(req)
-    .then(task => res.json({ task: task }))
+    .then(task => res.json(task))
     .catch(err => next(err));
 });
 

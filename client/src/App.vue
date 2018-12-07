@@ -2,21 +2,66 @@
   <section class="todoapp">
     <header class="header">
       <h1>tasks</h1>
-      <input class="new-todo" autofocus autocomplete="off" placeholder="What needs to be done?" v-model="newTodo" @keyup.enter="addTodo">
+      <input
+        class="new-todo"
+        autofocus
+        autocomplete="off"
+        placeholder="What needs to be done?"
+        v-model="newTodo"
+        @keyup.enter="addTodo"
+      />
     </header>
     <section class="main" v-show="todos.length">
-      <TodoList v-bind:todos="filteredTodos"/>
+      <TodoList v-bind:todos="filteredTodos" />
     </section>
     <footer class="footer" v-show="todos.length">
       <span class="todo-count">
-        <strong v-text="remaining"></strong> {{pluralize('item', remaining)}} left
+        <strong v-text="remaining"></strong>
+        {{ pluralize('item', remaining) }} left
       </span>
       <ul class="filters">
-        <li><a href="#/all" :class="{selected: visibility == 'all'}">All</a></li>
-        <li><a href="#/active" :class="{selected: visibility == 'active'}">Active</a></li>
-        <li><a href="#/completed" :class="{selected: visibility == 'completed'}">Completed</a></li>
+        <li>
+          <a
+            href="#"
+            :class="{ selected: visibility == 'all' }"
+            @click="
+              () => {
+                this.visibility = 'all';
+              }
+            "
+            >All</a
+          >
+        </li>
+        <li>
+          <a
+            href="#"
+            :class="{ selected: visibility == 'active' }"
+            @click="
+              () => {
+                this.visibility = 'active';
+              }
+            "
+            >Active</a
+          >
+        </li>
+        <li>
+          <a
+            href="#"
+            :class="{ selected: visibility == 'completed' }"
+            @click="
+              () => {
+                this.visibility = 'completed';
+              }
+            "
+            >Completed</a
+          >
+        </li>
       </ul>
-      <button class="clear-completed" @click="removeCompleted" v-show="todos.length > remaining">
+      <button
+        class="clear-completed"
+        @click="removeCompleted"
+        v-show="todos.length > remaining"
+      >
         Clear completed
       </button>
     </footer>
@@ -39,20 +84,20 @@ const filters = {
     return todos.filter(function(todo) {
       return todo.completed;
     });
-  }
+  },
 };
 
 export default {
   name: 'app',
   components: {
-    TodoList
+    TodoList,
   },
   data() {
     return {
       todos: [],
       newTodo: '',
       editedTodo: null,
-      visibility: 'all'
+      visibility: 'all',
     };
   },
   created() {
@@ -77,8 +122,8 @@ export default {
         this.todos.forEach(function(todo) {
           todo.completed = value;
         });
-      }
-    }
+      },
+    },
   },
   methods: {
     pluralize: function(word, count) {
@@ -96,8 +141,8 @@ export default {
 
     removeCompleted: function() {
       this.todos = filters.active(this.todos);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -188,8 +233,9 @@ export default {
   left: 0;
   height: 50px;
   overflow: hidden;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), 0 8px 0 -3px #f6f6f6, 0 9px 1px -3px rgba(0, 0, 0, 0.2),
-    0 16px 0 -6px #f6f6f6, 0 17px 2px -6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), 0 8px 0 -3px #f6f6f6,
+    0 9px 1px -3px rgba(0, 0, 0, 0.2), 0 16px 0 -6px #f6f6f6,
+    0 17px 2px -6px rgba(0, 0, 0, 0.2);
 }
 
 .todo-count {
