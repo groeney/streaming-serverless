@@ -5,7 +5,12 @@
     :class="{ completed: todo.completed, editing: todo == editedTodo }"
   >
     <div class="view">
-      <input class="toggle" type="checkbox" v-model="todo.completed" />
+      <input
+        class="toggle"
+        type="checkbox"
+        v-model="todo.completed"
+        @click="toggleCompleted"
+      />
       <label @dblclick="editTodo">{{ todo.title }}</label>
       <button class="destroy" @click="$emit('remove-todo', todo);"></button>
     </div>
@@ -29,7 +34,13 @@ export default {
       editedTodo: null,
     };
   },
-  watch: {},
+  watch: {
+    /* eslint-disable */
+    'todo.title': function(title, oldTitle) {
+      // If there is a title in newTitle, else do nothing and let it be deleted
+      // TODO api PATCH { completed }
+    },
+  },
   methods: {
     editTodo: function() {
       this.beforeEditCache = this.todo.title;
@@ -50,6 +61,10 @@ export default {
     cancelEdit: function() {
       this.editedTodo = null;
       this.todo.title = this.beforeEditCache;
+    },
+
+    toggleCompleted: function() {
+      // TODO api PATCH { completed }
     },
   },
   directives: {

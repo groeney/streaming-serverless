@@ -160,6 +160,7 @@ export default {
         })
         .catch(err => {
           this.todos.splice(index, 1);
+          // eslint-disable-next-line
           console.log(err);
         });
     },
