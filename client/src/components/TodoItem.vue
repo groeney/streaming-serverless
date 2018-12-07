@@ -35,6 +35,7 @@ export default {
     };
   },
   watch: {
+    /* eslint-disable */
     'todo.title': function(title, oldTitle) {
       // If there is a title in newTitle, else do nothing and let it be deleted
       // TODO api PATCH { completed }
@@ -64,7 +65,7 @@ export default {
 
     toggleCompleted: function() {
       // TODO api PATCH { completed }
-    }
+    },
   },
   directives: {
     'todo-focus': function(el, binding) {

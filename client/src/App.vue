@@ -103,8 +103,8 @@ export default {
   created() {
     fetch('/api/tasks')
       .then(response => response.json())
-      .then(json => {
-        this.todos = json.tasks;
+      .then(data => {
+        this.todos = data;
       });
   },
   computed: {
@@ -131,12 +131,33 @@ export default {
     },
 
     addTodo: function() {
-      var value = this.newTodo && this.newTodo.trim();
-      if (!value) {
+      const title = this.newTodo && this.newTodo.trim();
+      if (!title) {
         return;
       }
-      this.todos.push({ id: this.todos.length + 1, title: value, completed: false });
+      const todo = {
+        title,
+        completed: false,
+        update_time: new Date().toISOString(),
+      };
+
+      this.todos.unshift(todo);
+      const index = this.todos.indexOf(todo);
       this.newTodo = '';
+      fetch(`/api/tasks/`, {
+        headers,
+        method: 'POST',
+        body: JSON.stringify(todo),
+      })
+        .then(res => res.json())
+        .then(data => {
+          this.todos.splice(index, 1, data);
+        })
+        .catch(err => {
+          this.todos.splice(index, 1);
+          // eslint-disable-next-line
+          console.log(err);
+        });
     },
 
     removeCompleted: function() {

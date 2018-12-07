@@ -2,7 +2,6 @@ const cwd = process.cwd();
 const debug = require('debug')('models:tasks');
 const shortid = require('shortid');
 const env = process.env;
-debug(`env: ${JSON.stringify(env)}`);
 
 const dynamoose = require('dynamoose');
 const TaskSchema = new dynamoose.Schema(

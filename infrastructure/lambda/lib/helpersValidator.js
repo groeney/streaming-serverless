@@ -2,10 +2,19 @@
 
 const env = process.env;
 
+exports.createNotificationParams = createNotificationParams;
 exports.createSnsParams = createSnsParams;
-exports.handleParams = handleParams;
+exports.handleValidatorResults = handleValidatorResults;
 exports.parseValidatorFunction = parseValidatorFunction;
 exports.publishToTopic = publishToTopic;
+
+function createNotificationParams({ subject, message, toEmail }) {
+  return {
+    ...(!!subject && { subject }),
+    ...(!!message && { message, default: message }),
+    ...(!!toEmail && { toEmail }),
+  };
+}
 
 function createSnsParams(notificationParams, imageParams) {
   const messageAttributes = { ...notificationParams, ...imageParams };
@@ -19,7 +28,7 @@ function createSnsParams(notificationParams, imageParams) {
     : {};
 }
 
-function handleParams(sns, params, topicName) {
+function handleValidatorResults(sns, params, topicName) {
   return new Promise((resolve, reject) => {
     if (_isObjEmpty(params)) resolve('Invalid event.');
     else {
@@ -111,7 +120,6 @@ function _validateNotificationParams(notificationParams) {
     typeof notificationParams === 'object' &&
     !!notificationParams.subject &&
     !!notificationParams.message &&
-    !!notificationParams.toEmail &&
     !!notificationParams.default
   );
 }

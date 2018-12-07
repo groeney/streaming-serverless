@@ -1,9 +1,8 @@
 <template>
   <ul class="todo-list">
     <TodoItem
-      v-if="todo"
       @remove-todo="removeTodo"
-      v-for="todo in orderedTodos"
+      v-for="todo in todos"
       :todo="todo"
       :key="todo.task_id"
       :class="{ completed: todo.completed }"
@@ -27,22 +26,11 @@ export default {
       return word + (count === 1 ? '' : 's');
     },
 
-    addTodo: function() {
-      var value = this.newTodo && this.newTodo.trim();
-      if (!value) {
-        return;
-      }
-      this.todos.push({ id: this.todos.length + 1, title: value, completed: false });
-      this.newTodo = '';
-      // TODO api POST
-    },
-
     removeTodo: function(todo) {
       const index = this.todos.indexOf(todo);
       this.todos.splice(index, 1);
-      // TODO api DELETE
-    }
-  }
+    },
+  },
 };
 </script>
 
