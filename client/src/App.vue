@@ -14,6 +14,11 @@
     <section class="main" v-show="todos.length">
       <TodoList v-bind:todos="filteredTodos" />
     </section>
+    <footer class="footer">
+      <span class="todo-count">
+        Tasks for: <strong v-text="email"></strong
+      ></span>
+    </footer>
     <footer class="footer" v-show="todos.length">
       <span class="todo-count">
         <strong v-text="remaining"></strong>
@@ -86,9 +91,16 @@ export default {
       newTodo: '',
       editedTodo: null,
       visibility: 'all',
+      email: '',
     };
   },
   created() {
+    fetch('/api/me')
+      .then(response => response.json())
+      .then(data => {
+        this.email = data;
+      });
+
     fetch('/api/tasks')
       .then(response => response.json())
       .then(data => {
@@ -136,6 +148,7 @@ export default {
       this.todos.unshift(todo);
       const index = this.todos.indexOf(todo);
       this.newTodo = '';
+      console.log(`todo: ${JSON.stringify(todo)}`);
       fetch(`/api/tasks/`, {
         headers,
         method: 'POST',
@@ -257,16 +270,7 @@ export default {
 }
 
 .todo-count strong {
-  font-weight: 300;
-}
-
-.todo-count {
-  float: left;
-  text-align: left;
-}
-
-.todo-count strong {
-  font-weight: 300;
+  font-weight: 400;
 }
 
 .filters {

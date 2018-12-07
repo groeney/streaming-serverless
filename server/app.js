@@ -1,3 +1,4 @@
+const env = process.env;
 const http = require('http');
 const express = require('express');
 const dynamoose = require('dynamoose');
@@ -16,7 +17,9 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use('/api/tasks', require('./routes/tasks'));
-
-const server = app.listen(process.env.PORT || 5000, function() {
+app.use('/api/me', (req, res) => {
+  res.json(env.LOCAL_EMAIL);
+});
+const server = app.listen(env.PORT || 5000, function() {
   debug('Listening on port ' + server.address().port);
 });
