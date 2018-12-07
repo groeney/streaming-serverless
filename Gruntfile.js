@@ -10,7 +10,7 @@ module.exports = function(grunt) {
           'infrastructure/lambda/**/fn/package.json',
           'infrastructure/lambda/lib/helpers*.js',
         ],
-        tasks: ['redeploy'],
+        tasks: ['deploy'],
       },
     },
     env: {
@@ -48,18 +48,32 @@ module.exports = function(grunt) {
           return 'TMPDIR=/private$TMPDIR docker-compose up -d localstack';
         },
       },
-      localstackDown: {
+      stackDown: {
         command: () => {
           return 'docker-compose down';
         },
       },
-      up: {
+      stackUp: {
         command: () => {
           return 'TMPDIR=/private$TMPDIR docker-compose up';
         },
       },
     },
   });
+
+  /**** Register Tasks ****/
+  /* TLT (Top Level Tasks) */
+  grunt.registerTask('start', ['cleanup', 'build', 'shell:stackUp']);
+  grunt.registerTask('deploy', ['env:dev', 'shell:infraUp']);
+  grunt.registerTask('cleanup', ['del-tf-state', 'shell:stackDown']);
+  grunt.registerTask('docker', ['shell:dockerWatch']);
+
+  /* Used in TLTs */
+  grunt.registerTask('build', [
+    'shell:localstackUp',
+    'wait:3600', // Not functionally essential but keeps error logs clean
+    'deploy',
+  ]);
 
   grunt.registerTask(
     'del-tf-state',
@@ -90,17 +104,8 @@ module.exports = function(grunt) {
       done();
     }, ms);
   });
-  grunt.registerTask('build', [
-    'del-tf-state',
-    'shell:localstackDown',
-    'shell:localstackUp',
-    'wait:3600', // Not functionally essential but keeps error logs clean
-    'env:dev',
-    'shell:infraUp',
-  ]);
-  grunt.registerTask('redeploy', ['env:dev', 'shell:infraUp']);
-  grunt.registerTask('start', ['build', 'env:dev', 'shell:up']);
-  grunt.registerTask('docker', ['shell:dockerWatch']);
+
+  /**** Grunt plugins ****/
 
   grunt.loadNpmTasks('grunt-env');
   grunt.loadNpmTasks('grunt-contrib-watch');

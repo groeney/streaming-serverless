@@ -21,3 +21,7 @@ Messages must be matched by the following regex:
 ```js
 /^(revert: )?(feat|fix|style|refactor|chore)(\(.+\))?: .{1,50}/;
 ```
+
+### Misc thoughts
+
+- Toggle to LAMBDA_EXECUTOR=docker when dev so you can view log output from docker container. Using LAMBDA_EXECUTOR=docker-reuse for performance benefits

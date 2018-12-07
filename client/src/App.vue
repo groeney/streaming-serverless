@@ -24,11 +24,7 @@
           <a
             href="#"
             :class="{ selected: visibility == 'all' }"
-            @click="
-              () => {
-                this.visibility = 'all';
-              }
-            "
+            @click="toggleVisibility(0);"
             >All</a
           >
         </li>
@@ -36,11 +32,7 @@
           <a
             href="#"
             :class="{ selected: visibility == 'active' }"
-            @click="
-              () => {
-                this.visibility = 'active';
-              }
-            "
+            @click="toggleVisibility(1);"
             >Active</a
           >
         </li>
@@ -48,11 +40,7 @@
           <a
             href="#"
             :class="{ selected: visibility == 'completed' }"
-            @click="
-              () => {
-                this.visibility = 'completed';
-              }
-            "
+            @click="toggleVisibility(2);"
             >Completed</a
           >
         </li>
@@ -70,7 +58,7 @@
 
 <script>
 import TodoList from './components/TodoList.vue';
-
+const visibilities = ['all', 'active', 'completed'];
 const filters = {
   all: function(todos) {
     return todos;
@@ -126,6 +114,10 @@ export default {
     },
   },
   methods: {
+    toggleVisibility: function(visibilityIndex) {
+      if (visibilityIndex < visibilities.length)
+        this.visibility = visibilities[visibilityIndex];
+    },
     pluralize: function(word, count) {
       return word + (count === 1 ? '' : 's');
     },
