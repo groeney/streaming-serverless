@@ -44,18 +44,7 @@ exports.lambda_handler = (event, context, callback) => {
       });
   });
 
-  Promise.all(promises.map(p => p.catch(e => e)))
-    .then(res => {
-      callback(
-        null,
-        `Processed ${
-          res.length
-        } records with the following output: ${JSON.stringify(res)}`
-      );
-    })
-    .catch(err =>
-      callback(null, `${fnName} failed at the root level: ${err.stack || err}`)
-    );
+  h.handlePromises(promises, fnName, callback);
 };
 
 /*
@@ -66,70 +55,49 @@ exports.lambda_handler = (event, context, callback) => {
 
 function validateInsert(record) {
   return new Promise((resolve, reject) => {
-    let subject, message, toEmail;
+    let event, variables;
+    const events = hv.events.Tasks.INSERT;
+
     const newTask = h.parseDynamoObj(record.NewImage);
 
-    // TODO completed is being sent through stream as S not BOOL
-    newTask.completed = newTask.completed === 'true';
-
     /* --- START event business logic --- */
-
-    subject = 'New Task';
-    message = `A new task has been created for you to complete: ${
-      newTask.title
-    }`;
-    toEmail = newTask.assignee_email;
-
+    event = events[0];
+    event = hv.interpolateAndParseEvent(
+      event,
+      hv.handleVariables(event.variables, { newTask })
+    );
     /* --- END event business logic --- */
 
-    const notificationParams = hv.createNotificationParams({
-      subject,
-      message,
-      toEmail,
-    });
-
-    resolve(hv.createSnsParams(notificationParams));
+    resolve(hv.createSnsParams(event));
   });
 }
 
 function validateModify(record) {
   return new Promise((resolve, reject) => {
-    let subject, message, toEmail;
+    let event = {};
+    const events = hv.events.Tasks.MODIFY;
+
     const newTask = h.parseDynamoObj(record.NewImage);
     const oldTask = h.parseDynamoObj(record.OldImage);
-
-    // TODO completed is being sent through stream as S not BOOL
-    newTask.completed = newTask.completed === 'true';
-    oldTask.completed = oldTask.completed === 'true';
 
     /* --- START event business logic --- */
 
 
     /* --- END event business logic --- */
 
-    const notificationParams = hv.createNotificationParams({
-      subject,
-      message,
-      toEmail,
-    });
-
-    resolve(hv.createSnsParams(notificationParams));
+    resolve(hv.createSnsParams(event));
   });
 }
 
 function validateRemove(record) {
   return new Promise((resolve, reject) => {
-    let subject, message, toEmail;
+    let event = {};
+    const events = hv.events.Tasks.DELETE;
 
     /* --- START event business logic --- */
 
     /* --- END event business logic --- */
 
-    const notificationParams = hv.createNotificationParams({
-      subject,
-      message,
-      toEmail,
-    });
-    resolve(hv.createSnsParams(notificationParams));
+    resolve(hv.createSnsParams(event));
   });
 }

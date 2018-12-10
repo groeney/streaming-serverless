@@ -1,36 +1,33 @@
 /* Helpers for validator layer */
 
+const yaml = require('js-yaml');
+const fs = require('fs');
+const h = require('./helpers.js');
+
 const env = process.env;
 
-exports.createNotificationParams = createNotificationParams;
+exports.events = yaml.load(fs.readFileSync('./events.yml', 'utf-8'));
 exports.createSnsParams = createSnsParams;
 exports.handleValidatorResults = handleValidatorResults;
+exports.handleVariables = handleVariables;
+exports.interpolateAndParseEvent = interpolateAndParseEvent;
 exports.parseValidatorFunction = parseValidatorFunction;
 exports.publishToTopic = publishToTopic;
 
-function createNotificationParams({ subject, message, toEmail }) {
-  return {
-    ...(!!subject && { subject }),
-    ...(!!message && { message, default: message }),
-    ...(!!toEmail && { toEmail }),
-  };
-}
-
-function createSnsParams(notificationParams, imageParams) {
-  const messageAttributes = { ...notificationParams, ...imageParams };
-  return _validateNotificationParams(notificationParams)
-    ? {
-        Subject: notificationParams.subject,
-        Message: JSON.stringify(messageAttributes),
-        MessageAttributes: _formatMessageAttributes(messageAttributes),
+function createSnsParams(event) {
+  const notifications = _createNotificationParams(event);
+  return h.isEmpty(notifications)
+    ? {}
+    : {
+        Message: JSON.stringify(notifications),
+        MessageAttributes: _formatMessageAttributes(notifications),
         MessageStructure: 'json',
-      }
-    : {};
+      };
 }
 
 function handleValidatorResults(sns, params, topicName) {
   return new Promise((resolve, reject) => {
-    if (_isObjEmpty(params)) resolve('Invalid event.');
+    if (h.isEmpty(params)) resolve('Invalid event.');
     else {
       publishToTopic(sns, params, topicName)
         .then(res => {
@@ -41,6 +38,33 @@ function handleValidatorResults(sns, params, topicName) {
         });
     }
   });
+}
+
+function handleVariables(variableKeys, data = {}) {
+  const mappings = {
+    emailTo({ newTask }) {
+      return [newTask.assignee_email || ''];
+    },
+    smsTo({ newTask }) {
+      return [newTask.assignee_phone || ''];
+    },
+    taskTitle({ newTask }) {
+      return newTask.title || '';
+    },
+    newTaskTitle({ newTask }) {
+      return newTask.title || '';
+    },
+    oldTaskTitle({ oldTask }) {
+      return oldTask.title || '';
+    },
+  };
+
+  return _createVars(variableKeys, mappings, data);
+}
+
+function interpolateAndParseEvent(event, variables = {}) {
+  const eventStr = JSON.stringify(event).interpolate(variables);
+  return { ...JSON.parse(eventStr), variables };
 }
 
 function parseValidatorFunction(eventName) {
@@ -72,6 +96,30 @@ function publishToTopic(sns, params, topicName) {
 }
 
 /* Helpers of helpers */
+
+function _createNotificationParams(event) {
+  const notifications = event.notifications;
+  const variables = event.variables;
+  if (h.isEmpty(notifications) || h.isEmpty(variables)) return {};
+
+  /* { emailTo: 'me@example.com' } => { email: { to: 'me@example.com', ... } } */
+  Object.keys(notifications).map(k => {
+    notifications[k]['to'] = variables[k + 'To'];
+  });
+
+  return {
+    default: { notifications },
+  };
+}
+
+function _createVars(keys, mappings, data) {
+  return keys.reduce((res, key) => {
+    if (mappings[key]) {
+      res[key] = mappings[key](data);
+    }
+    return res;
+  }, {});
+}
 
 function _getTopicArn(sns, topicName) {
   return new Promise((resolve, reject) => {
@@ -110,22 +158,4 @@ function _formatMessageAttributes(messageAttributes) {
     };
   });
   return res;
-}
-
-function _validateNotificationParams(notificationParams) {
-  /*
-  Determines whether the notification params for the event are valid
-  */
-  return (
-    typeof notificationParams === 'object' &&
-    !!notificationParams.subject &&
-    !!notificationParams.message &&
-    !!notificationParams.default
-  );
-}
-
-function _isObjEmpty(obj) {
-  return (
-    typeof obj === 'undefined' || obj === null || Object.keys(obj).length === 0
-  );
 }

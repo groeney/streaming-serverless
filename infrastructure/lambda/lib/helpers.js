@@ -4,9 +4,39 @@ Helpers that are shared across both validator and executer layers.
 
 */
 
+String.prototype.interpolate = function(params) {
+  const names = Object.keys(params);
+  const vals = Object.values(params);
+  return new Function(...names, `return \`${this}\`;`)(...vals);
+};
+
+exports.handlePromises = handlePromises;
+exports.isEmpty = isEmpty;
 exports.parseDynamoObj = parseDynamoObj;
 
 /* Function definitions */
+
+function handlePromises(promises, fnName, callback) {
+  return Promise.all(promises.map(p => p.catch(e => e)))
+    .then(res => {
+      callback(
+        null,
+        `Processed ${
+          res.length
+        } records with the following output: ${JSON.stringify(res)}`
+      );
+    })
+    .catch(err =>
+      callback(null, `${fnName} failed at the root level: ${err.stack || err}`)
+    );
+}
+
+function isEmpty(obj) {
+  return (
+    typeof obj === 'undefined' || obj === null || Object.keys(obj).length === 0
+  );
+}
+
 function parseDynamoObj(item) {
   return _stripMetaData(item);
 }

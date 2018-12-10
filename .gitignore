@@ -9,6 +9,7 @@ node_modules/
 
 # Lambda
 /infrastructure/lambda/**/fn/helpers*.js
+/infrastructure/lambda/**/fn/events.yml
 /infrastructure/lambda/**/*.zip
 /infrastructure/lambda/**/output/
 /infrastructure/lambda/*/fn/node_modules/

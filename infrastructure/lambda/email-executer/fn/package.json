@@ -4,7 +4,6 @@
   "description": "Lambda function to send email notifications",
   "main": "index.js",
   "scripts": {
-    "test": "node ./scripts/jest.js",
     "copyLib": "cp -rf ../../lib/* ./"
   },
   "author": "James Groeneveld",
