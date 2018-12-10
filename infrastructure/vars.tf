@@ -1,3 +1,7 @@
+variable "TWILIO_SID" {}
+variable "TWILIO_TOKEN" {}
+variable "TWILIO_FROM" {}
+variable "LOCAL_PHONE" {}
 variable "SENDGRID_KEY" {}
 variable "LOCAL_EMAIL" {}
 

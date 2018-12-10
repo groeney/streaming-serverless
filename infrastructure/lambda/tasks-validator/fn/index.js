@@ -82,6 +82,13 @@ function validateModify(record) {
 
     /* --- START event business logic --- */
 
+    if (newTask.completed && !oldTask.completed) {
+      event = events[0];
+      event = hv.interpolateAndParseEvent(
+        event,
+        hv.handleVariables(event.variables, { newTask, oldTask })
+      );
+    }
 
     /* --- END event business logic --- */
 

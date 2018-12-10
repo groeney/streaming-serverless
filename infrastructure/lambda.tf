@@ -47,3 +47,27 @@ output "email_executer_invoke_arn" {
 output "email_executer_qualified_arn" {
   value = "${module.email_executer.email_executer_qualified_arn}"
 }
+
+### sms executer ###
+
+module "sms_executer" {
+  source               = "./lambda/sms-executer"
+  role_arn             = "FAKE_ROLE_ARN"
+  sns_notifications_topic_arn = "${aws_sns_topic.notifications.arn}"
+  twilio_sid = "${var.TWILIO_SID}"
+  twilio_token = "${var.TWILIO_TOKEN}"
+  twilio_from = "${var.TWILIO_FROM}"
+  local_phone = "${var.LOCAL_PHONE}"
+}
+
+output "sms_executer_arn" {
+  value = "${module.sms_executer.sms_executer_arn}"
+}
+
+output "sms_executer_invoke_arn" {
+  value = "${module.sms_executer.sms_executer_invoke_arn}"
+}
+
+output "sms_executer_qualified_arn" {
+  value = "${module.sms_executer.sms_executer_qualified_arn}"
+}

@@ -18,7 +18,13 @@ export default {
     TodoItem,
   },
   props: ['todos'],
-  computed: {},
+  computed: {
+    orderedTodos: function() {
+      return this.todos.sort((a, b) =>
+        a.update_time < b.update_time ? 1 : -1
+      );
+    },
+  },
   // methods that implement data logic.
   // note there's no DOM manipulation here at all.
   methods: {
