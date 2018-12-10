@@ -23,6 +23,10 @@ const TaskSchema = new dynamoose.Schema(
       type: String,
       default: env.LOCAL_EMAIL,
     },
+    assignee_phone: {
+      type: String,
+      default: env.LOCAL_PHONE,
+    },
   },
   {
     saveUnknown: true,

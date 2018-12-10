@@ -64,7 +64,18 @@ export default {
     },
 
     toggleCompleted: function() {
-      // TODO api PATCH { completed }
+      const completed = !this.todo.completed;
+      this.todo.update_time = new Date().toISOString();
+      fetch(`/api/tasks/${this.todo.task_id}`, {
+        headers,
+        method: 'PATCH',
+        body: JSON.stringify({ completed }),
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log(JSON.stringify(data));
+          Object.assign(this.todo, data);
+        });
     },
   },
   directives: {

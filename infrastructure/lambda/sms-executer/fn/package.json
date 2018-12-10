@@ -1,0 +1,15 @@
+{
+  "name": "sms-executer-lambda",
+  "version": "1.0.0",
+  "description": "Lambda function to send sms notifications",
+  "main": "index.js",
+  "scripts": {
+    "copyLib": "cp -rf ../../lib/* ./"
+  },
+  "author": "James Groeneveld",
+  "license": "ISC",
+  "dependencies": {
+    "js-yaml": "^3.12.0",
+    "twilio": "^3.25.0"
+  }
+}

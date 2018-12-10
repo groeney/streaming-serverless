@@ -9,6 +9,8 @@ module.exports = function(grunt) {
           'infrastructure/lambda/**/fn/index.js',
           'infrastructure/lambda/**/fn/package.json',
           'infrastructure/lambda/lib/helpers*.js',
+          'infrastructure/lambda.tf',
+          'infrastructure/lambda/**/main.tf',
         ],
         tasks: ['deploy'],
       },

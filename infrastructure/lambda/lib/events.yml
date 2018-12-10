@@ -7,3 +7,10 @@ Tasks:
         email:
           subject: 'New Task'
           body: 'A new task has been created for you to complete: ${taskTitle}'
+  MODIFY:
+    - name: Task Completed
+      type: Notification
+      variables: [taskTitle, smsTo]
+      notifications:
+        sms:
+          body: '${taskTitle} has been completed :-)'
