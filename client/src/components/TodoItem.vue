@@ -34,13 +34,7 @@ export default {
       editedTodo: null,
     };
   },
-  watch: {
-    /* eslint-disable */
-    'todo.title': function(title, oldTitle) {
-      // If there is a title in newTitle, else do nothing and let it be deleted
-      // TODO api PATCH { completed }
-    },
-  },
+  watch: {},
   methods: {
     editTodo: function() {
       this.beforeEditCache = this.todo.title;
@@ -55,6 +49,18 @@ export default {
       this.todo.title = this.todo.title.trim();
       if (!this.todo.title) {
         this.$emit('remove-todo', this.todo);
+      } else {
+        const title = this.todo.title;
+        fetch(`/api/tasks/${this.todo.task_id}`, {
+          headers,
+          method: 'PATCH',
+          body: JSON.stringify({ title }),
+        })
+          .then(res => res.json())
+          .then(data => {
+            console.log(JSON.stringify(data));
+            Object.assign(this.todo, data);
+          });
       }
     },
 

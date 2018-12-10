@@ -14,3 +14,9 @@ Tasks:
       notifications:
         sms:
           body: '${taskTitle} has been completed :-)'
+    - name: Task Title Modified
+      type: Notification
+      variables: [oldTaskTitle, newTaskTitle, smsTo]
+      notifications:
+        sms:
+          body: 'Task name changed ${oldTaskTitle} --> ${newTaskTitle}'
