@@ -90,6 +90,14 @@ function validateModify(record) {
       );
     }
 
+    if (newTask.title != oldTask.title) {
+      event = events[1];
+      event = hv.interpolateAndParseEvent(
+        event,
+        hv.handleVariables(event.variables, { newTask, oldTask })
+      );
+    }
+
     /* --- END event business logic --- */
 
     resolve(hv.createSnsParams(event));
