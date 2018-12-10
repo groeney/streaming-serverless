@@ -18,20 +18,20 @@ const config = new AWS.Config({
   region: env.AWS_REGION,
 });
 
-const ddb = new AWS.DynamoDB({
-  endpoint: `http://${env.LOCALSTACK_HOSTNAME}:4569`,
-});
-
 const h = require('./helpers.js');
 const he = require('./helpersExecuter.js');
 
 exports.lambda_handler = (event, context, callback) => {
   console.log(`event: ${JSON.stringify(event)}`);
   console.log(`env: ${JSON.stringify(env)}`);
-
   const promises = event.Records.map(record => {
-    const messageAttributes = JSON.parse(record.Sns.Message);
-    return emailTransport(messageAttributes)
+    const notifications = JSON.parse(record.Sns.Message).default.notifications;
+    if (h.isEmpty(notifications))
+      return Promise.resolve(
+        `No notifications defined in record ${JSON.stringify(record)}`
+      );
+
+    return emailHandler(notifications)
       .then(res => {
         callback(null, `${fnName} succeeded with ${JSON.stringify(res)}`);
       })
@@ -40,41 +40,42 @@ exports.lambda_handler = (event, context, callback) => {
       );
   });
 
-  Promise.all(promises.map(p => p.catch(e => e)))
-    .then(res => {
-      callback(
-        null,
-        `Processed ${
-          res.length
-        } records with the following output: ${JSON.stringify(res)}`
-      );
-    })
-    .catch(err =>
-      callback(null, `${fnName} failed at the root level: ${err.stack || err}`)
-    );
+  h.handlePromises(promises, fnName, callback);
 };
 
-function emailTransport(messageAttributes) {
+function emailHandler(notifications) {
+  return h.isEmpty(notifications.email)
+    ? Promise.resolve(
+        `No email notifications defined in notifications ${JSON.stringify(
+          notifications
+        )}`
+      )
+    : emailTransport(notifications.email);
+}
+
+function emailTransport(emailNotification) {
   mail.setApiKey(env.SENDGRID_KEY);
-  const emailParams = createEmailParams(messageAttributes);
-  console.log(JSON.stringify(emailParams));
+  const emailParams = createEmailParams(emailNotification);
+  console.log(
+    `Sending email with the following params: ${JSON.stringify(emailParams)}`
+  );
   return mail.send(emailParams);
 }
 
-function createEmailParams({ toEmail, subject, message }) {
+function createEmailParams({ to, subject, body }) {
   return {
     subject,
-    personalizations: [
-      {
+    personalizations: to.map(email => {
+      return {
         to: {
-          email: toEmail,
+          email,
         },
-      },
-    ],
+      };
+    }),
     content: [
       {
         type: 'text/plain',
-        value: message,
+        value: body,
       },
     ],
     from: {

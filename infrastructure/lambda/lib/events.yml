@@ -1,0 +1,9 @@
+Tasks:
+  INSERT:
+    - name: New Task
+      type: Notification
+      variables: [taskTitle, emailTo]
+      notifications:
+        email:
+          subject: 'New Task'
+          body: 'A new task has been created for you to complete: ${taskTitle}'
