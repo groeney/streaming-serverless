@@ -42,11 +42,15 @@ function handleValidatorResults(sns, params, topicName) {
 
 function handleVariables(event, data = {}) {
   const mappings = {
-    emailTo({ newTask }) {
-      return [newTask.assignee_email || ''];
+    emailTo({ newTask, oldTask }) {
+      oldTask = oldTask || {};
+      newTask = newTask || {};
+      return [newTask.assignee_email || oldTask.assignee_email || ''];
     },
-    smsTo({ newTask }) {
-      return [newTask.assignee_phone || ''];
+    smsTo({ newTask, oldTask }) {
+      oldTask = oldTask || {};
+      newTask = newTask || {};
+      return [newTask.assignee_phone || oldTask.assignee_phone || ''];
     },
     taskTitle({ newTask, oldTask }) {
       oldTask = oldTask || {};

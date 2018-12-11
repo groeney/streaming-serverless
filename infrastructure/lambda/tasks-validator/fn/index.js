@@ -107,10 +107,15 @@ function validateModify(record) {
 function validateRemove(record) {
   return new Promise((resolve, reject) => {
     let event = {};
-    const events = hv.events.Tasks.DELETE;
+    const events = hv.events.Tasks.REMOVE;
+    const oldTask = h.parseDynamoObj(record.OldImage);
 
     /* --- START event business logic --- */
-
+    event = events[0];
+    event = hv.interpolateAndParseEvent(
+      event,
+      hv.handleVariables(event, { oldTask })
+    );
     /* --- END event business logic --- */
 
     resolve(hv.createSnsParams(event));
