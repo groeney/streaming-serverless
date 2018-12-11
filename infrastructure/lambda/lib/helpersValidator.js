@@ -40,7 +40,7 @@ function handleValidatorResults(sns, params, topicName) {
   });
 }
 
-function handleVariables(variableKeys, data = {}) {
+function handleVariables(event, data = {}) {
   const mappings = {
     emailTo({ newTask }) {
       return [newTask.assignee_email || ''];
@@ -48,8 +48,10 @@ function handleVariables(variableKeys, data = {}) {
     smsTo({ newTask }) {
       return [newTask.assignee_phone || ''];
     },
-    taskTitle({ newTask }) {
-      return newTask.title || '';
+    taskTitle({ newTask, oldTask }) {
+      oldTask = oldTask || {};
+      newTask = newTask || {};
+      return newTask.title || oldTask.title || '';
     },
     newTaskTitle({ newTask }) {
       return newTask.title || '';
@@ -59,7 +61,7 @@ function handleVariables(variableKeys, data = {}) {
     },
   };
 
-  return _createVars(variableKeys, mappings, data);
+  return _createVars(event.variables, mappings, data);
 }
 
 function interpolateAndParseEvent(event, variables = {}) {

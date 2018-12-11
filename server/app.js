@@ -18,7 +18,9 @@ app.use(bodyParser.json());
 
 app.use('/api/tasks', require('./routes/tasks'));
 app.use('/api/me', (req, res) => {
-  res.json(env.LOCAL_EMAIL);
+  const email = env.LOCAL_EMAIL;
+  const phone = env.LOCAL_PHONE;
+  res.json({ email, phone });
 });
 const server = app.listen(env.PORT || 5000, function() {
   debug('Listening on port ' + server.address().port);
