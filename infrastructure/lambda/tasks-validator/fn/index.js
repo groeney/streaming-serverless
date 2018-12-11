@@ -64,7 +64,7 @@ function validateInsert(record) {
     event = events[0];
     event = hv.interpolateAndParseEvent(
       event,
-      hv.handleVariables(event.variables, { newTask })
+      hv.handleVariables(event, { newTask })
     );
     /* --- END event business logic --- */
 
@@ -86,7 +86,7 @@ function validateModify(record) {
       event = events[0];
       event = hv.interpolateAndParseEvent(
         event,
-        hv.handleVariables(event.variables, { newTask, oldTask })
+        hv.handleVariables(event, { newTask, oldTask })
       );
     }
 
@@ -94,7 +94,7 @@ function validateModify(record) {
       event = events[1];
       event = hv.interpolateAndParseEvent(
         event,
-        hv.handleVariables(event.variables, { newTask, oldTask })
+        hv.handleVariables(event, { newTask, oldTask })
       );
     }
 

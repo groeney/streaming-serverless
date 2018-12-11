@@ -5,7 +5,7 @@ Tasks:
       variables: [taskTitle, emailTo]
       notifications:
         email:
-          subject: 'New Task'
+          subject: New Task
           body: 'A new task has been created for you to complete: ${taskTitle}'
   MODIFY:
     - name: Task Completed

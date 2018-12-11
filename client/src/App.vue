@@ -16,7 +16,8 @@
     </section>
     <footer class="footer">
       <span class="todo-count">
-        Tasks for: <strong v-text="email"></strong
+        Notifications sent to <strong v-text="email"></strong> |
+        <strong v-text="phone"></strong
       ></span>
     </footer>
     <footer class="footer" v-show="todos.length">
@@ -98,7 +99,8 @@ export default {
     fetch('/api/me')
       .then(response => response.json())
       .then(data => {
-        this.email = data;
+        this.email = data.email;
+        this.phone = data.phone;
       });
 
     fetch('/api/tasks')

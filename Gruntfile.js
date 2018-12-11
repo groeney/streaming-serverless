@@ -73,7 +73,7 @@ module.exports = function(grunt) {
   /* Used in TLTs */
   grunt.registerTask('build', [
     'shell:localstackUp',
-    'wait:3600', // Not functionally essential but keeps error logs clean
+    'wait:5000', // Not functionally essential but keeps error logs clean
     'deploy',
   ]);
 
