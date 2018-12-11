@@ -35,6 +35,14 @@ export default {
     removeTodo: function(todo) {
       const index = this.todos.indexOf(todo);
       this.todos.splice(index, 1);
+      fetch(`/api/tasks/${todo.task_id}`, { method: 'DELETE' })
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          this.todos.splice(index, 0, todo);
+          console.log(err);
+        });
     },
   },
 };
