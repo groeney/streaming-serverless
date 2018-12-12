@@ -8,7 +8,6 @@ const AWS = require('aws-sdk');
 
 const env = process.env;
 const fnName = env.AWS_LAMBDA_FUNCTION_NAME;
-const localEmail = env.LOCAL_EMAIL;
 
 console.log(`Loading function ${fnName}...`);
 

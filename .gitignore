@@ -8,11 +8,11 @@ node_modules/
 .terraform/
 
 # Lambda
-/infrastructure/lambda/**/fn/helpers*.js
-/infrastructure/lambda/**/fn/events.yml
-/infrastructure/lambda/**/*.zip
-/infrastructure/lambda/**/output/
-/infrastructure/lambda/*/fn/node_modules/
+
+## js
+/infrastructure/lambda/js/**/helpers*.js
+/infrastructure/lambda/js/**/events.yml
+/infrastructure/lambda/js/**/output/
 
 # Log files
 npm-debug.log*

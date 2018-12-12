@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "Lambda function to send email notifications",
   "main": "index.js",
-  "scripts": {
-    "copyLib": "cp -rf ../../lib/* ./"
-  },
   "author": "James Groeneveld",
   "license": "ISC",
   "dependencies": {

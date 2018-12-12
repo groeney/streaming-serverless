@@ -1,9 +1,12 @@
+variable "LAMBDA_RUNTIME" {
+  description = "Which Lambda runtime to deploy"
+  default     = "nodejs8.10"
+}
+
 variable "TWILIO_SID" {}
 variable "TWILIO_TOKEN" {}
 variable "TWILIO_FROM" {}
-variable "LOCAL_PHONE" {}
 variable "SENDGRID_KEY" {}
-variable "LOCAL_EMAIL" {}
 
 variable "AWS_KEY" {
   default = "FAKE_AWS_KEY"
