@@ -3,11 +3,11 @@ variable "hash_key" {}
 variable "hash_key_type" {}
 
 resource "aws_dynamodb_table" "table" {
-  name = "${var.name}"
-  read_capacity = 5
-  write_capacity = 5
-  hash_key = "${var.hash_key}"
-  stream_enabled = true
+  name             = "${var.name}"
+  read_capacity    = 5
+  write_capacity   = 5
+  hash_key         = "${var.hash_key}"
+  stream_enabled   = true
   stream_view_type = "NEW_AND_OLD_IMAGES"
 
   attribute {
@@ -18,7 +18,7 @@ resource "aws_dynamodb_table" "table" {
   lifecycle {
     ignore_changes = [
       "read_capacity",
-      "write_capacity"
+      "write_capacity",
     ]
   }
 }

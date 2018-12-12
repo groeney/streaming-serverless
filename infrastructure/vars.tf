@@ -8,9 +8,11 @@ variable "LOCAL_EMAIL" {}
 variable "AWS_KEY" {
   default = "FAKE_AWS_KEY"
 }
+
 variable "AWS_SECRET" {
   default = "FAKE_AWS_SECRET"
 }
+
 variable "region" {
   default = "us-east-1"
 }

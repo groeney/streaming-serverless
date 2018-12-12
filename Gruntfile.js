@@ -14,6 +14,12 @@ module.exports = function(grunt) {
         ],
         tasks: ['deploy'],
       },
+      terraform: {
+        files: [
+          '**/*.tf'
+        ],
+        tasks: ['shell:formatTf']
+      },
     },
     env: {
       dev: {
@@ -25,6 +31,11 @@ module.exports = function(grunt) {
         command: () => {
           return 'watch -n 1 docker ps -a';
         },
+      },
+      formatTf: {
+        command: () => {
+          return 'terraform fmt .'
+        }
       },
       infraUp: {
         command: () => {

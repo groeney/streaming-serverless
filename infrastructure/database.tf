@@ -1,7 +1,7 @@
 module "tasks_table" {
-  source = "./dynamodb/tables/tasks"
-  name = "Tasks"
-  hash_key = "task_id"
+  source        = "./dynamodb/tables/tasks"
+  name          = "Tasks"
+  hash_key      = "task_id"
   hash_key_type = "S"
 }
 
