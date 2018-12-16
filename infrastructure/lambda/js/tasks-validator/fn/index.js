@@ -8,7 +8,6 @@ const env = process.env;
 const fnName = env.AWS_LAMBDA_FUNCTION_NAME;
 console.log(`Loading function ${fnName}...`);
 
-const isLocal = !!env.LOCALSTACK_HOSTNAME;
 const AWS = require('aws-sdk');
 
 const config = new AWS.Config({

@@ -65,7 +65,7 @@ function handleVariables(event, data = {}) {
     },
   };
 
-  return _createVars(event.variables, mappings, data);
+  return _mapVars(event.variables, mappings, data);
 }
 
 function interpolateAndParseEvent(event, variables = {}) {
@@ -118,7 +118,7 @@ function _createNotificationParams(event) {
   };
 }
 
-function _createVars(keys, mappings, data) {
+function _mapVars(keys, mappings, data) {
   return keys.reduce((res, key) => {
     if (mappings[key]) {
       res[key] = mappings[key](data);

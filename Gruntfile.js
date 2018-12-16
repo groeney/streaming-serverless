@@ -14,6 +14,15 @@ module.exports = function(grunt) {
         ],
         tasks: ['deploy'],
       },
+      pyLambda: {
+        files: [
+          'infrastructure/lambda/py/**/fn/index.py',
+          'infrastructure/lambda/py/lib/*helpers*',
+          'infrastructure/lambda.tf',
+          'infrastructure/lambda/terraform/**/main.tf',
+        ],
+        tasks: ['deploy'],
+      },
       terraform: {
         files: [
           '**/*.tf'

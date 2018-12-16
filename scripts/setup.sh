@@ -29,7 +29,7 @@ build_deps() {
 }
 
 handler_brew() {
-  packages=(python@2 terraform)
+  packages=(python@3 terraform)
 
   for package in "${packages[@]}"
   do
