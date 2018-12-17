@@ -72,7 +72,7 @@ module.exports = function(grunt) {
       },
       stackDown: {
         command: () => {
-          return 'docker-compose down';
+          return 'docker-compose down && if [[ $(docker ps -aq) ]]; then docker rm -f $(docker ps -aq); fi';
         },
       },
       stackUp: {
@@ -90,7 +90,7 @@ module.exports = function(grunt) {
   grunt.registerTask('cleanup', ['del-tf-state', 'shell:stackDown']);
   grunt.registerTask('docker', ['shell:dockerWatch']);
 
-  /* Used in TLTs */
+  /* STs Secondary Tasks */
   grunt.registerTask('build', [
     'shell:localstackUp',
     'wait:5000', // Not functionally essential but keeps error logs clean
