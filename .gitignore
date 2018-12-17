@@ -8,15 +8,12 @@ node_modules/
 .terraform/
 
 # Lambda
-/infrastructure/lambda/py/*/fn/*
+/infrastructure/lambda/py/*/fn/vendored/*
+/infrastructure/lambda/py/*/fn/setup.cfg
 
 /infrastructure/lambda/*/*/fn/*helpers*
 /infrastructure/lambda/*/*/fn/events.yml
 /infrastructure/lambda/*/*/output/*
-
-!/infrastructure/lambda/py/*/fn/index.py
-!/infrastructure/lambda/py/*/fn/requirements.txt
-!/infrastructure/lambda/py/*/fn/setup.cfg
 
 # Log files
 npm-debug.log*

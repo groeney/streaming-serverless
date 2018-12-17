@@ -54,6 +54,12 @@ resource "aws_lambda_function" "validator" {
   memory_size      = 128
   timeout          = 30
 
+  environment {
+    variables = {
+      PYTHONPATH = "/var/task/vendored:/var/runtime"
+    }
+  }
+
   depends_on = ["data.archive_file.function_zip"]
 }
 

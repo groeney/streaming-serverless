@@ -1,8 +1,6 @@
 """
 Handles the following event types: INSERT, MODIFY and REMOVE for Tasks table DynamoDB Stream.
 """
-
-
 import os
 import boto3
 from validator_helpers import (
@@ -16,7 +14,7 @@ from validator_helpers import (
 from helpers import parse_ddb_node
 
 FUNCTION_NAME = os.environ["AWS_LAMBDA_FUNCTION_NAME"]
-print(f"Loading function {FUNCTION_NAME}")
+print(f"Loading function {FUNCTION_NAME} with {os.environ}")
 
 session = boto3.setup_default_session(
     aws_access_key_id=os.environ["AWS_ACCESS_KEY_ID"],
@@ -39,7 +37,7 @@ def lambda_handler(event, context):
     sns_params = globals()[validator_method_name](record["dynamodb"])
     try:
         res = handle_validator_results(sns, sns_params, "notifications")
-        success_str = f"{FUNCTION_NAME} succeeded: {res}"
+        return f"{FUNCTION_NAME} succeeded: {res}"
     except Exception as e:
         return f"{FUNCTION_NAME} failed with {e} on record: {record}"
 

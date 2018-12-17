@@ -14,8 +14,12 @@ variable "create_package_command" {
   description = "Bash command to install dependencies for appropriate runtime"
 }
 
-variable "lambda_env" {
+variable "_env" {
   type = "map"
+}
+
+locals {
+  env = "${merge("${var._env}", map("PYTHONPATH", "/var/task/vendored:/var/runtime"))}"
 }
 
 variable "function_dir" {
@@ -56,7 +60,7 @@ resource "aws_lambda_function" "executer" {
   timeout          = 30
 
   environment {
-    variables = "${var.lambda_env}"
+    variables = "${local.env}"
   }
 
   depends_on = ["data.archive_file.executer_function_zip"]

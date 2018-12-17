@@ -1,9 +1,9 @@
 import os
 import re
-from yaml import load
 import json
+import yaml
 
-EVENTS = load(open("./events.yml"))
+EVENTS = yaml.load(open("./events.yml"))
 
 
 def create_py_compliant_event(event):
@@ -73,7 +73,7 @@ def _create_notification_params(event):
         notifications[key]["to"] = variable_map.get(f"{key}_to")
         notifications[key][
             "body"
-        ] += f". Sent from my {os.environ['AWS_LAMBDA_FUNCTION_NAME']}!"
+        ] += f". Sent from my {os.environ['AWS_EXECUTION_ENV']}!"
 
     return {"default": dict(notifications=notifications)}
 

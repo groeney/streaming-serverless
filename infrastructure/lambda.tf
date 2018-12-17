@@ -7,7 +7,7 @@ locals {
   runtime_dir            = "./lambda/${local.runtime_short}"
   cp_command             = "cp -rf ../../lib/* ./ && cp -rf ../../../lib/* ./"
   node_package_command   = "${local.cp_command} && npm i"
-  py_package_command     = "${local.cp_command}"
+  py_package_command     = "${local.cp_command} && python3 -m pip install -r ./requirements.txt -t ./vendored"
   create_package_command = "${local.enable_node_runtime ? local.node_package_command : local.py_package_command}"
 
   # Validator specific locals
@@ -67,7 +67,7 @@ module "email_executer" {
   package_dir                 = "${local.email_executer_dir}"
   target                      = "email"
 
-  lambda_env = {
+  _env = {
     SENDGRID_KEY = "${var.SENDGRID_KEY}"
   }
 }
@@ -97,7 +97,7 @@ module "sms_executer" {
   package_dir                 = "${local.sms_executer_dir}"
   target                      = "sms"
 
-  lambda_env = {
+  _env = {
     TWILIO_SID   = "${var.TWILIO_SID}"
     TWILIO_TOKEN = "${var.TWILIO_TOKEN}"
     TWILIO_FROM  = "${var.TWILIO_FROM}"
