@@ -7,7 +7,7 @@ locals {
   runtime_dir            = "./lambda/${local.runtime_short}"
   cp_command             = "cp -rf ../../lib/* ./ && cp -rf ../../../lib/* ./"
   node_package_command   = "${local.cp_command} && npm i"
-  py_package_command     = "${local.cp_command} && python3 -m pip install -r ./requirements.txt -t ./vendored"
+  py_package_command     = "${local.cp_command} && python3 -m pip install -r ./requirements.txt -t ./vendored --upgrade"
   create_package_command = "${local.enable_node_runtime ? local.node_package_command : local.py_package_command}"
 
   # Validator specific locals

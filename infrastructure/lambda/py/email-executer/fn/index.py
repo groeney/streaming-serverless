@@ -30,7 +30,7 @@ def lambda_handler(event, context):
 
     assert (
         notifications
-    ), "SNS Message was malformed because notifications is empty or not initialized in local scope"
+    ), f"SNS Message was malformed because notifications is empty or not initialized in local scope: {notifications}"
 
     return email_handler(notifications)
 

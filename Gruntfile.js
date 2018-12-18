@@ -4,22 +4,13 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     watch: {
-      jsLambda: {
+      lambda: {
         files: [
-          'infrastructure/lambda/js/**/fn/index.js',
-          'infrastructure/lambda/js/**/fn/package.json',
-          'infrastructure/lambda/js/lib/helpers*',
+          'infrastructure/lambda/**/fn/index.*',
+          'infrastructure/lambda/*/lib/*helpers*',
+          'infrastructure/lambda/js/*/fn/package.json',
           'infrastructure/lambda.tf',
-          'infrastructure/lambda/terraform/**/main.tf',
-        ],
-        tasks: ['deploy'],
-      },
-      pyLambda: {
-        files: [
-          'infrastructure/lambda/py/**/fn/index.py',
-          'infrastructure/lambda/py/lib/*helpers*',
-          'infrastructure/lambda.tf',
-          'infrastructure/lambda/terraform/**/main.tf',
+          'infrastructure/lambda/terraform/*/main.tf',
         ],
         tasks: ['deploy'],
       },
