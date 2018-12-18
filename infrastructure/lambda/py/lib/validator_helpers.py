@@ -101,6 +101,7 @@ def _handle_variables(event, **resource_data):
         return kwargs.get("new_task") or kwargs.get("old_task") or dict()
 
     mappings = dict(
+        sms_to=lambda **kwargs: get_subject_task(**kwargs).get("assignee_phone"),
         email_to=lambda **kwargs: get_subject_task(**kwargs).get("assignee_email"),
         task_title=lambda **kwargs: get_subject_task(**kwargs).get("title"),
     )

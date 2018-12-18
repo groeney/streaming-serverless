@@ -36,7 +36,7 @@ def lambda_handler(event, context):
 
 
 def email_handler(notifications):
-    email_notification = notifications.get("email", {})
+    email_notification = notifications.get("email")
     if not email_notification:
         return f"No email notification defined in {notifications}"
 
