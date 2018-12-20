@@ -1,5 +1,6 @@
 {
   "name": "streaming-serverless",
+  "repository": "git@github.com:j-groeneveld/streaming-serverless.git",
   "version": "1.0.0",
   "description": "A working example showcasing how event-driven architecture can be used to decouple asynchronous tasks from your web applications.",
   "main": "index.js",

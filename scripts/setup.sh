@@ -8,90 +8,67 @@ handle_docker() {
   pgrep -f docker >/dev/null 2>&1
   if [ $? -eq 1 ]; then
     tput setaf 1;
-    echo "Error: Docker is not running, start or install Docker and continue."
+    echo "Error: Docker is not running. Start or install Docker and continue."
     exit 1
   fi
 }
 
-handle_grunt() {
-  npm list --depth 1 --global grunt-cli > /dev/null 2>&1
-
-  if [ $? -eq 1 ]; then
-    tput setaf 1;
-    echo "Grunt not installed globally! Install with -g manually if desired to run via CLI without NPX!"
-    tput sgr0;
-  fi
-}
-
 build_deps() {
-  handler_brew
-  handler_pip
+  brew_handler
+  npm_handler
+  # pip_handler
 }
 
-handler_brew() {
-  packages=(python@3 terraform)
+brew_handler() {
+  brew --version > /dev/null 2>&1
+  if [ ! $? -eq 0 ]; then
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  fi
+  packages=(python@3 terraform npm)
 
-  for package in "${packages[@]}"
-  do
-    brew ls $package >/dev/null 2>&1
-    if [ $? -eq 0 ]; then
-      echo "$package already installed"
-    else
-      brew install $package
-    fi
-  done
+  handler_X "brew ls" "brew install" "brew"
 }
 
-handler_pip() {
+npm_handler() {
+  packages=(grunt-cli)
+
+  handler_X "npm list --depth 1 --global" "npm install --global grunt" "npm"
+}
+
+pip_handler() {
   packages=(awscli-local)
 
+  handler_X "pip list | grep -F" "pip install" "pip"
+}
+
+handler_X() {
+  existence_cmd="$1"
+  install_cmd="$2"
+
   for package in "${packages[@]}"
   do
-    pip list | grep -F $package >/dev/null 2>&1
+    `(echo $existence_cmd)` "$package" > /dev/null 2>&1
     if [ $? -eq 0 ]; then
-      echo "PIP Package $package"
+      echo "$package already installed..."
     else
-      pip install $package >/dev/null 2>&1
+      read -k -r "REPLY?Install $package with $3? (Y/n) "
+      echo
+      if [[ $REPLY =~ ^[Yy]$ ]]
+      then
+        `(echo $install_cmd)` "$package" > /dev/null 2>&1
+      fi
     fi
   done
-}
-
-source_nvm() {
-  local NVM_LOCATION=false
-
-  brew ls nvm >/dev/null 2>&1
-  if [ $? -eq 0 ]; then
-    NVM_LOCATION=$(brew --prefix nvm)
-  elif [ -n $NVM_DIR ]; then
-    NVM_LOCATION=$NVM_DIR
-  else
-    handler_nvm
-  fi
-
-  . $NVM_LOCATION/nvm.sh
-}
-
-build_nvm() {
-  nvm install
-  nvm use
 }
 
 build_npm() {
   npm i
 }
 
-handler_nvm() {
-  echo "Installing NVM"
-  brew install nvm
-}
-
 handler() {
   handle_docker
-  handle_grunt
 
   build_deps
-  source_nvm
-  build_nvm
   build_npm
 }
 
