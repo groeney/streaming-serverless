@@ -44,6 +44,11 @@ pip_handler() {
 handler_X() {
   existence_cmd="$1"
   install_cmd="$2"
+  if [ $0 -eq "-zsh" ]; then
+    read_cmd="read -k"
+  else
+    read_cmd="read -p"
+  fi
 
   for package in "${packages[@]}"
   do
@@ -51,7 +56,8 @@ handler_X() {
     if [ $? -eq 0 ]; then
       echo "$package already installed..."
     else
-      read -k -r "REPLY?Install $package with $3? (Y/n) "
+
+      `(echo $read_cmd)` "REPLY?Install $package with $3? (Y/n)" -n 1 -r
       echo
       if [[ $REPLY =~ ^[Yy]$ ]]
       then

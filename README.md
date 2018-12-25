@@ -14,7 +14,7 @@ Prerequisites:
 - `darwin*` OS
 - [Docker for Mac](https://docs.docker.com/v17.12/docker-for-mac/install/)
 
-Run `. ./scripts/setup.sh` from the root to install project dependencies
+Run `./scripts/setup.sh` from the root to install project dependencies
 
 ___
 
