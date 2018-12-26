@@ -29,6 +29,6 @@ services:
     environment:
       - SERVICES=dynamodb,lambda,sns,kinesis
       - DEBUG=${DEBUG- }
-      - LAMBDA_EXECUTOR=docker
+      - LAMBDA_EXECUTOR=docker-reuse
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
